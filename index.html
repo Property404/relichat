@@ -12,17 +12,13 @@
 
 
 	<div class="container">
-		<div class="jumbotron jumbotron-fluid">
+		<div class="jumbotron jumbotron-fluid main-jumbotron vertical-center">
 			<div class="container">
 
 
 			</div>
 		</div>
 	</div>
-
-	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#enterUserModal">
-		Launch
-	</button>
 
 	<div class="modal fade" id="enterUserModal" tabindex="-1" role="dialog" aria-labelledby="enterUserModal" aria-hidden="true">
 		<div class="modal-dialog modal-md">
@@ -31,7 +27,9 @@
 				<div class="jumbotron tealer-background">
 					<h1 class="modal-title text-center white-text" id="myModalLabel">Where @?</h1>
 					<div class="input-group input-group-lg top-buffer">
-						<input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+						<input id="username" type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+						<input id="password" type="text" class="form-control" placeholder="Password(Optional)" aria-describedby="basic-addon1">
+
 					</div>
 					<div class="form-group top-buffer">
 						<div class="col-lg-12 text-center">
