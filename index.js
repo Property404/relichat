@@ -19,10 +19,20 @@ io = socketio.listen(server, {
 });
 io.on("connection", function(socket){
 	console.log("a user connected");
-	socket.broadcast.emit("hi friend");
-	socket.on("tomain message", function(msg){
-		io.emit("frommain message", msg);
-		console.log("message: " + msg);
+	var username;
+	var pubkey;
+	socket.on("signin", function(data){
+		console.log("User signing in...");
+		username = data["username"];
+		pubkey = data["pubkey"];
+	});
+	socket.on("tomain message", function(data){
+		io.emit("frommain message", {
+			"username":username,
+			"msg": data.msg,
+			"publickey":pubkey,
+			"signature":data.signature});
+		console.log("message: " + data.msg);
 	});
 	socket.on("disconnect", function(){
 		console.log("User disconnected");

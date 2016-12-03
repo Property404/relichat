@@ -5,7 +5,8 @@
 	<script src="/static/js/crypto.js"></script>
 	<script>
 		generateAuthKey().then(function(key){
-			document.write(key);
+			document.write(key.publicKey);
+			console.log(key);
 		});
 	</script>
 </body>
