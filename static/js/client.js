@@ -4,7 +4,8 @@ var authkeypair;
 var cryptkeypair;
 var focus="main";
 mainchat = [];//array of objects
-privatechats = [];//array of objects, each containing arrays of objects lol lol lol
+users = {}
+privatechats = {};//array of objects, each containing arrays of objects lol lol lol
 
 // set up sockets
 var socket = io.connect("https://45.55.195.156:3000", {secure:true});
@@ -33,7 +34,38 @@ function str2ab(str) {
   }
   return buf;
 }
-
+// Add private chat
+function addPrivateChat(str){
+	if(!(str in privatechats) && str!="main"){
+		privatechats[str] = [];
+	}
+}
+function updatePrivateChats(){
+	$("#privateChats").empty();
+	$("#privateChats").append($("<li class='list-group-item' style='font-weight: bold;' onclick='changeFocus(\"main\")'>").text("Main Chat"));
+	for (let chat in privatechats){
+		$("#privateChats").append($("<li class='list-group-item' onclick='changeFocus(\""+chat.replace("\\","\\\\").replace("\"","\\\"")+"\")'>").text(chat));
+	}
+}
+function updateMessages(messages){
+	$("#messages").empty();
+	for(let i in messages){
+		$("#messages").append($("<li>").text(i.username+":"+i.msg));
+	}
+}	
+// Change focus
+function changeFocus(str){
+	console.log("Changing Focus!");
+	focus = str;
+	addPrivateChat(focus);
+	updatePrivateChats();
+	if(focus=="main"){
+		updateMessages(mainchat);
+	}else{
+		updateMessages(privatechats[focus]);
+	}	
+	console.log(focus);
+}
 // On "go"
 document.getElementById("goButton").onclick = function(){
 	username = document.getElementById("username").value;
@@ -48,7 +80,8 @@ document.getElementById("goButton").onclick = function(){
 			{"username" : username,
 			"pubauthkey" : authkeypair.publicKey,
 			"pubcryptkey": cryptkeypair.publicKey});
-
+			
+			updatePrivateChats();
 			// Allow use of chat
 			$("form").submit(function(){
 				console.log("Submited");
@@ -77,10 +110,11 @@ document.getElementById("goButton").onclick = function(){
 				$('#m').val('');
 				return false;
 			});
+			
 			socket.on("update-users", function(users){
 				$("#connectedUsers").empty();
 				for(let user in users){
-					$("#connectedUsers").append($("<button class='list-group-item'>").text(user));
+					$("#connectedUsers").append($("<li class='list-group-item'>").text(user).append("<img src='/static/pm.png' style='width: 25%; height: 25%; align=\"right\";' align='right' onclick='changeFocus(\""+user.replace("\\","\\\\").replace("\"","\\\"")+"\")'/>"));
 				}
 			});
 			/* Recieve messages */
