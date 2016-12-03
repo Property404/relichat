@@ -2,6 +2,7 @@
 var username = "";
 var authkeypair;
 var cryptkeypair;
+var focus="main";
 mainchat = [];//array of objects
 privatechats = [];//array of objects, each containing arrays of objects lol lol lol
 
@@ -76,9 +77,16 @@ document.getElementById("goButton").onclick = function(){
 				$('#m').val('');
 				return false;
 			});
+			socket.on("update-users", function(users){
+				$("#connectedUsers").empty();
+				for(let user in users){
+					$("#connectedUsers").append($("<button class='list-group-item'>").text(user));
+				}
+			});
 			/* Recieve messages */
-			socket.on("frommain message", function(data){
-				/* Verify signature */
+			socket.on("message", function(data){
+				console.log("Incoming");
+				/* Verify signature 
 				console.log(data.pubauthkey);
 				console.log(authkeypair.publicKey);
 				window.crypto.subtle.verify(
@@ -92,7 +100,18 @@ document.getElementById("goButton").onclick = function(){
 					if(!isvalid){alert("INVALID SIGNATURE HOLY FUCK BALLS");}
 					mainchat.push({"username":data.username, "msg":data.msg});
 				}).catch(function(err){console.log(err)});
-				//$("#messages").append($("<li>").text(data.msg));
+				*/
+				var targetfocus;
+				if(data.type == "main"){
+					targetfocus = "main";
+					mainchat.push({"username":data.username, "msg":data.msg});
+				}else{
+					targetfocus = data.username;
+					privatechats[data.username].push(data.msg);
+				}
+				if(focus == targetfocus){	
+					$("#messages").append($("<li>").text(data.username+":"+data.msg));
+				}
 			});
 
 			// Close modal

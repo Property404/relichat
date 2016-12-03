@@ -6,6 +6,7 @@ var sslOptions = {
 	key: fs.readFileSync("newkey.pem"),
 	cert: fs.readFileSync("cert.pem")
 };
+var clients = {};
 var app = express();
 server = https.createServer(sslOptions, app);
 app.use("/static", express.static("./static"));
@@ -29,9 +30,12 @@ io.on("connection", function(socket){
 		pubauthkey = data["pubauthkey"];
 		console.log(pubauthkey.type);
 		pubcryptkey = data["pubcryptkey"];
+		clients[username] = {"pubauthkey":pubauthkey};
+		io.sockets.emit("update-users", clients);
 	});
 	socket.on("tomain message", function(data){
-		io.emit("frommain message", {
+		io.emit("message", {
+			"type": "main",
 			"username":username,
 			"msg": data.msg,
 			"pubauthkey":pubauthkey,
@@ -40,6 +44,8 @@ io.on("connection", function(socket){
 	});
 	socket.on("disconnect", function(){
 		console.log("User disconnected");
+		delete clients[username];
+		io.sockets.emit("update-users", clients);
 	});
 });
 
