@@ -31,8 +31,8 @@ form button {
 }
 
 .vertical-center {
-  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
-  min-height: 100vh; /* These two lines are counted as one :-)       */
+  min-height: 100%;
+  min-height: 100vh;
 
   display: flex;
   align-items: center;
@@ -43,6 +43,7 @@ form button {
   background-color: #F4F4EB;
   min-height: 600px
   padding:200px 0 140px 0;
+
 }
 
 .text-left {
