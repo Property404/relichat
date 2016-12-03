@@ -36,7 +36,7 @@ document.getElementById("goButton").onclick = function(){
 
 			// Allow use of chat
 			$("form").submit(function(){
-
+				console.log("Submited");
 				/* Get message and sign */
 				msg = $("#m").val();
 				signature = "bla bla bla";
@@ -46,6 +46,7 @@ document.getElementById("goButton").onclick = function(){
 			});
 
 			socket.on("frommain message", function(data){
+				console.log("lala");
 				$("#messages").append($("<li>").text(data.msg));
 			});
 
