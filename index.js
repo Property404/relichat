@@ -20,17 +20,21 @@ io = socketio.listen(server, {
 io.on("connection", function(socket){
 	console.log("a user connected");
 	var username;
-	var pubkey;
+	var pubauthkey;
+	var pubcryptkey;
 	socket.on("signin", function(data){
 		console.log("User signing in...");
 		username = data["username"];
-		pubkey = data["pubkey"];
+		console.log(username);
+		pubauthkey = data["pubauthkey"];
+		console.log(pubauthkey.type);
+		pubcryptkey = data["pubcryptkey"];
 	});
 	socket.on("tomain message", function(data){
 		io.emit("frommain message", {
 			"username":username,
 			"msg": data.msg,
-			"publickey":pubkey,
+			"pubauthkey":pubauthkey,
 			"signature":data.signature});
 		console.log("message: " + data.msg);
 	});
@@ -39,7 +43,9 @@ io.on("connection", function(socket){
 	});
 });
 
-server.listen(3000);
+server.listen(3000, function(){
+	console.log("Listening on 3000");
+});
 /*
 http.listen(3000, function(){
 	console.log("listening on *:3000");
