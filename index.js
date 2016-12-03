@@ -1,8 +1,11 @@
-var app = require("express")();
+var express = require("express");
+var app = express();
 var http = require("http").Server(app);
 
+
+app.use("/static", express.static("./static"));
 app.get("/", function(req, res){
-	res.send("<h1>Hello World</h1>");
+	res.sendFile(__dirname + "/index.html");
 });
 
 http.listen(3000, function(){
