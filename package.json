@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Property404/relichat/issues"
   },
-  "homepage": "https://github.com/Property404/relichat#readme"
+  "homepage": "https://github.com/Property404/relichat#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
 }
