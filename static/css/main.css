@@ -39,8 +39,10 @@ form button {
 }
 
 .main-jumbotron{
+
   background-color: #F4F4EB;
   min-height: 600px
+  padding:200px 0 140px 0;
 }
 
 .text-left {
