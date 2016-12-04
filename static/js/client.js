@@ -1,9 +1,13 @@
 // Initialize variables
 var username = "";
 var focus="main";
-mainchat = {"new":0, "messages":[]};//array of objects
-users = {}
+
+/* Record of chat messages */
+mainchat = {"new":0, "messages":[]};
 privatechats = {};//array of objects, each containing arrays of objects lol lol lol
+
+/* Record of current users */
+users = {}
 
 // set up sockets
 var socket = io.connect("https://45.55.195.156", {secure:true});
@@ -11,13 +15,12 @@ var socket = io.connect("https://45.55.195.156", {secure:true});
 
 // Load sign in modal
 $(window).on("load", function(){
-	
 	$("#enterUserModal").modal({"show":true, backdrop: 'static', keyboard: false});
 });
 
 // Is something a valid identifier?
 function validName(uname){
-	if (uname.length>2){
+	if (uname.length>1 && uname!="main" && uname.length<30){
 		return true;
 	}else{
 		return false;
@@ -37,10 +40,14 @@ function updatePrivateChats(){
 		$("#privateChats").append($("<li "+(focus==chat?"style='font-weight: bold;'":"")+"class='list-group-item' onclick='changeFocus(\""+chat.replace("\\","\\\\").replace("\"","\\\"")+"\")'>").text(chat+(privatechats[chat]["new"]?"("+privatechats[chat]["new"]+")":"")));
 	}
 }
+
+function postMessage(username, message){
+	$("#messages").append($("<li>").text(username + ": " + message));
+}
 function updateMessages(messages){
 	$("#messages").empty();
 	for(let i of messages){
-		$("#messages").append($("<li>").text(i.username+":"+i.msg));
+		postMessage(i.username, i.msg);
 		console.log(i);
 	}
 }	
@@ -81,7 +88,7 @@ document.getElementById("goButton").onclick = function(){
 						console.log("Emitting private message");
 						socket.emit("toprivate message", {"focus":focus, "msg":msg});
 						privatechats[focus].messages.push({"username":username, "msg":msg});
-						$("#messages").append($("<li>").text(username+":"+msg));
+						postMessage(username, msg);
 					}
 				console.log("Clearing");
 				$('#m').val('');
@@ -96,22 +103,6 @@ document.getElementById("goButton").onclick = function(){
 			});
 			/* Recieve messages */
 			socket.on("message", function(data){
-				console.log("Incoming");
-				/* Verify signature 
-				console.log(data.pubauthkey);
-				console.log(authkeypair.publicKey);
-				window.crypto.subtle.verify(
-					{
-						name: "RSASSA-PKCS1-v1_5",
-					},
-					data.pubauthkey,
-					data.signature,
-					str2ab(msg)
-				).then(function(isvalid){
-					if(!isvalid){alert("INVALID SIGNATURE HOLY FUCK BALLS");}
-					mainchat.push({"username":data.username, "msg":data.msg});
-				}).catch(function(err){console.log(err)});
-				*/
 				var targetfocus;
 				if(data.type == "main"){
 					targetfocus = "main";
@@ -119,13 +110,12 @@ document.getElementById("goButton").onclick = function(){
 				}else{
 					targetfocus = data.username;
 					if (!(data.username in privatechats)){
-						console.log("School yo");
 						privatechats[data.username]={"messages":[], "new":0};
 											}
 					privatechats[data.username].messages.push({"username": data.username, "msg":data.msg});
 				}
 				if(focus == targetfocus){	
-					$("#messages").append($("<li>").text(data.username+":"+data.msg));
+					postMessage(data.username, data.msg);
 				}else{
 					privatechats[data.username]["new"] += 1;
 				}
