@@ -3,7 +3,7 @@ var username = "";
 var authkeypair;
 var cryptkeypair;
 var focus="main";
-mainchat = [];//array of objects
+mainchat = {"new":0, "messages":[]};//array of objects
 users = {}
 privatechats = {};//array of objects, each containing arrays of objects lol lol lol
 
@@ -37,14 +37,14 @@ function str2ab(str) {
 // Add private chat
 function addPrivateChat(str){
 	if(!(str in privatechats) && str!="main"){
-		privatechats[str] = [];
+		privatechats[str] = {"messages":[], "new":0};
 	}
 }
 function updatePrivateChats(){
 	$("#privateChats").empty();
-	$("#privateChats").append($("<li class='list-group-item' style='font-weight: bold;' onclick='changeFocus(\"main\")'>").text("Main Chat"));
+	$("#privateChats").append($("<li class='list-group-item' style='font-weight: "+(focus=="main"?"bold":"normal")+";' onclick='changeFocus(\"main\")'>").text("Main Chat"));
 	for (let chat in privatechats){
-		$("#privateChats").append($("<li class='list-group-item' onclick='changeFocus(\""+chat.replace("\\","\\\\").replace("\"","\\\"")+"\")'>").text(chat));
+		$("#privateChats").append($("<li "+(focus==chat?"style='font-weight: bold;'":"")+"class='list-group-item' onclick='changeFocus(\""+chat.replace("\\","\\\\").replace("\"","\\\"")+"\")'>").text(chat+(privatechats[chat]["new"]?"("+privatechats[chat]["new"]+")":"")));
 	}
 }
 function updateMessages(messages){
@@ -61,11 +61,12 @@ function changeFocus(str){
 	addPrivateChat(focus);
 	updatePrivateChats();
 	if(focus=="main"){
-		updateMessages(mainchat);
+		updateMessages(mainchat.messages);
 	}else{
-		updateMessages(privatechats[focus]);
+		updateMessages(privatechats[focus].messages);
 	}	
 	console.log(focus);
+	privatechats[focus]["new"] = 0;
 }
 // On "go"
 document.getElementById("goButton").onclick = function(){
@@ -106,7 +107,7 @@ document.getElementById("goButton").onclick = function(){
 					}else{
 						console.log("Emitting private message");
 						socket.emit("toprivate message", {"focus":focus, "msg":msg, "signature": signature});
-						privatechats[focus].push({"username":username, "msg":msg});
+						privatechats[focus].messages.push({"username":username, "msg":msg});
 						$("#messages").append($("<li>").text(username+":"+msg));
 					}
 				}).catch(function(err){alert("Signing issue");console.log("NO");console.log(err);});
@@ -142,19 +143,22 @@ document.getElementById("goButton").onclick = function(){
 				var targetfocus;
 				if(data.type == "main"){
 					targetfocus = "main";
-					mainchat.push({"username":data.username, "msg":data.msg});
+					mainchat["messages"].push({"username":data.username, "msg":data.msg});
 				}else{
 					targetfocus = data.username;
 					if (!(data.username in privatechats)){
 						console.log("School yo");
-						privatechats[data.username]=[];
-						updatePrivateChats();
-					}
-					privatechats[data.username].push({"username": data.username, "msg":data.msg});
+						privatechats[data.username]={"messages":[], "new":0};
+											}
+					privatechats[data.username].messages.push({"username": data.username, "msg":data.msg});
 				}
 				if(focus == targetfocus){	
 					$("#messages").append($("<li>").text(data.username+":"+data.msg));
+				}else{
+					privatechats[data.username]["new"] += 1;
 				}
+				updatePrivateChats();
+
 			});
 
 			// Close modal
