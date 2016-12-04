@@ -8,7 +8,7 @@ users = {}
 privatechats = {};//array of objects, each containing arrays of objects lol lol lol
 
 // set up sockets
-var socket = io.connect("https://45.55.195.156:3000", {secure:true});
+var socket = io.connect("https://45.55.195.156", {secure:true});
 
 
 // Load sign in modal
@@ -49,8 +49,9 @@ function updatePrivateChats(){
 }
 function updateMessages(messages){
 	$("#messages").empty();
-	for(let i in messages){
+	for(let i of messages){
 		$("#messages").append($("<li>").text(i.username+":"+i.msg));
+		console.log(i);
 	}
 }	
 // Change focus
@@ -99,11 +100,14 @@ document.getElementById("goButton").onclick = function(){
 				).then(function(signature){
 					console.log("'Bout to 'mit");
 					
-					if(true){
+					if(focus=="main"){
 						console.log("Emitting main message");
 						socket.emit("tomain message", {"msg":msg, "signature": signature});
 					}else{
 						console.log("Emitting private message");
+						socket.emit("toprivate message", {"focus":focus, "msg":msg, "signature": signature});
+						privatechats[focus].push({"username":username, "msg":msg});
+						$("#messages").append($("<li>").text(username+":"+msg));
 					}
 				}).catch(function(err){alert("Signing issue");console.log("NO");console.log(err);});
 				console.log("Clearing");
@@ -141,7 +145,10 @@ document.getElementById("goButton").onclick = function(){
 					mainchat.push({"username":data.username, "msg":data.msg});
 				}else{
 					targetfocus = data.username;
-					privatechats[data.username].push(data.msg);
+					if (!(data.username in privatechats)){
+						privatechats[datausername]=[];
+					}
+					privatechats[data.username].push({"username": data.username, "msg":data.msg});
 				}
 				if(focus == targetfocus){	
 					$("#messages").append($("<li>").text(data.username+":"+data.msg));

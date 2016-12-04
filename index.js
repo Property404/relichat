@@ -30,7 +30,7 @@ io.on("connection", function(socket){
 		pubauthkey = data["pubauthkey"];
 		console.log(pubauthkey.type);
 		pubcryptkey = data["pubcryptkey"];
-		clients[username] = {"pubauthkey":pubauthkey};
+		clients[username] = {"pubauthkey":pubauthkey, "session": socket.id};
 		io.sockets.emit("update-users", clients);
 	});
 	socket.on("tomain message", function(data){
@@ -42,15 +42,28 @@ io.on("connection", function(socket){
 			"signature":data.signature});
 		console.log("message: " + data.msg);
 	});
+	socket.on("toprivate message", function(data){
+		console.log("PRIVATE");
+		console.log(data.focus);
+		var session = clients[data.focus].session;
+		console.log(session);
+		io.to(clients[data.focus].session).emit("message", {
+			"type": "private",
+			"username": username,
+			"msg": data.msg,
+			"pubauthkey":pubauthkey,
+			"signature":data.signature});
+		console.log("pm:" + data.msg);
+		});
 	socket.on("disconnect", function(){
 		console.log("User disconnected");
 		delete clients[username];
 		io.sockets.emit("update-users", clients);
 	});
 });
-
-server.listen(3000, function(){
-	console.log("Listening on 3000");
+const PORT=443;
+server.listen(PORT, function(){
+	console.log("Listening on "+PORT);
 });
 /*
 http.listen(3000, function(){
