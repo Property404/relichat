@@ -45,6 +45,7 @@ io.on("connection", function(socket){
 	socket.on("toprivate message", function(data){
 		console.log("PRIVATE");
 		console.log(data.focus);
+		try{
 		var session = clients[data.focus].session;
 		console.log(session);
 		io.to(clients[data.focus].session).emit("message", {
@@ -54,6 +55,9 @@ io.on("connection", function(socket){
 			"pubauthkey":pubauthkey,
 			"signature":data.signature});
 		console.log("pm:" + data.msg);
+		}catch(err){
+			console.log("err"+err);
+		}
 		});
 	socket.on("disconnect", function(){
 		console.log("User disconnected");
