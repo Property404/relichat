@@ -118,7 +118,7 @@ document.getElementById("goButton").onclick = function(){
 			socket.on("update-users", function(users){
 				$("#connectedUsers").empty();
 				for(let user in users){
-					$("#connectedUsers").append($("<li class='list-group-item'>").text(user).append("<img src='/static/pm.png' style='width: 25%; height: 25%; align=\"right\";' align='right' onclick='changeFocus(\""+user.replace("\\","\\\\").replace("\"","\\\"")+"\")'/>"));
+					$("#connectedUsers").append($("<li class='list-group-item'>").text(user).prepend("<span class='fa fa-comment-o' align='right' onclick='changeFocus(\""+user.replace("\\","\\\\").replace("\"","\\\"")+"\")'>&nbsp;&nbsp;</span>"));
 				}
 			});
 			/* Recieve messages */
@@ -146,7 +146,9 @@ document.getElementById("goButton").onclick = function(){
 				}else{
 					targetfocus = data.username;
 					if (!(data.username in privatechats)){
-						privatechats[datausername]=[];
+						console.log("School yo");
+						privatechats[data.username]=[];
+						updatePrivateChats();
 					}
 					privatechats[data.username].push({"username": data.username, "msg":data.msg});
 				}
