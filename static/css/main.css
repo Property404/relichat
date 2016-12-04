@@ -1,6 +1,6 @@
 * {
-  margin: 0; p
-  adding: 0;
+  margin: 0;
+  padding: 0;
   box-sizing:
   border-box;
 }
@@ -11,23 +11,23 @@
 
 * form {
   width:100%;
-  background: #02C39A;
+  background: #00A896;
   padding: 20px;
-  position: fixed; bottom: 0;
-
+  position: fixed;
+  bottom: 0;
 }
 
 * form input {
-  width: 90%;
+
   border: 0;
   background: #F5EFED;
-  padding: 10px;
   margin-right: .5%;
+
 }
 
 form button {
   width: 9%;
-  background: rgb(130, 224, 255);
+  background: #5cb85c;
   border: none;
   padding: 10px;
 }
@@ -40,8 +40,8 @@ form button {
 }
 
 .fixed {
-        position: fixed;
-        width: 13%;
+    position: fixed;
+    width: 13%;
 }
 
 .main-jumbotron{
