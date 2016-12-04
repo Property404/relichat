@@ -21,16 +21,11 @@ io = socketio.listen(server, {
 io.on("connection", function(socket){
 	console.log("a user connected");
 	var username;
-	var pubauthkey;
-	var pubcryptkey;
 	socket.on("signin", function(data){
 		console.log("User signing in...");
 		username = data["username"];
 		console.log(username);
-		pubauthkey = data["pubauthkey"];
-		console.log(pubauthkey.type);
-		pubcryptkey = data["pubcryptkey"];
-		clients[username] = {"pubauthkey":pubauthkey, "session": socket.id};
+		clients[username] = {"session": socket.id};
 		io.sockets.emit("update-users", clients);
 	});
 	socket.on("tomain message", function(data){
@@ -38,7 +33,6 @@ io.on("connection", function(socket){
 			"type": "main",
 			"username":username,
 			"msg": data.msg,
-			"pubauthkey":pubauthkey,
 			"signature":data.signature});
 		console.log("message: " + data.msg);
 	});
@@ -51,9 +45,7 @@ io.on("connection", function(socket){
 		io.to(clients[data.focus].session).emit("message", {
 			"type": "private",
 			"username": username,
-			"msg": data.msg,
-			"pubauthkey":pubauthkey,
-			"signature":data.signature});
+			"msg": data.msg });
 		console.log("pm:" + data.msg);
 		}catch(err){
 			console.log("err"+err);

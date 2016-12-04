@@ -1,7 +1,5 @@
 // Initialize variables
 var username = "";
-var authkeypair;
-var cryptkeypair;
 var focus="main";
 mainchat = {"new":0, "messages":[]};//array of objects
 users = {}
@@ -25,15 +23,7 @@ function validName(uname){
 		return false;
 	}
 }
-// string to array buffer
-function str2ab(str) {
-  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-  var bufView = new Uint16Array(buf);
-  for (var i=0, strLen=str.length; i<strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
-}
+
 // Add private chat
 function addPrivateChat(str){
 	if(!(str in privatechats) && str!="main"){
@@ -72,16 +62,9 @@ function changeFocus(str){
 document.getElementById("goButton").onclick = function(){
 	username = document.getElementById("username").value;
 	if (validName(username)){
-		// Generate RSA key pair
-		generateAuthKey().then(function(authkey){
-			authkeypair = authkey;
-			generateCryptKey().then(function(cryptkey){
-			cryptkeypair = cryptkey
 			// Sign in
 			socket.emit("signin",
-			{"username" : username,
-			"pubauthkey" : authkeypair.publicKey,
-			"pubcryptkey": cryptkeypair.publicKey});
+			{"username" : username });
 			
 			updatePrivateChats();
 			// Allow use of chat
@@ -89,28 +72,17 @@ document.getElementById("goButton").onclick = function(){
 				console.log("Submited");
 				/* Get message*/
 				msg = $("#m").val();
-				console.log("Woo wee! About to sign! Can dooo!");
-				console.log(authkeypair);
-				/* Sign */
-				window.crypto.subtle.sign(
-					{
-						name: "RSASSA-PKCS1-v1_5",
-					},
-					authkeypair.privateKey,
-					str2ab(msg)
-				).then(function(signature){
 					console.log("'Bout to 'mit");
 					
 					if(focus=="main"){
 						console.log("Emitting main message");
-						socket.emit("tomain message", {"msg":msg, "signature": signature});
+						socket.emit("tomain message", {"msg":msg});
 					}else{
 						console.log("Emitting private message");
-						socket.emit("toprivate message", {"focus":focus, "msg":msg, "signature": signature});
+						socket.emit("toprivate message", {"focus":focus, "msg":msg});
 						privatechats[focus].messages.push({"username":username, "msg":msg});
 						$("#messages").append($("<li>").text(username+":"+msg));
 					}
-				}).catch(function(err){alert("Signing issue");console.log("NO");console.log(err);});
 				console.log("Clearing");
 				$('#m').val('');
 				return false;
@@ -164,8 +136,6 @@ document.getElementById("goButton").onclick = function(){
 			// Close modal
 			console.log("Closing");
 			$("#enterUserModal").modal("hide");
-		}).catch(function(err){alert("Gencryptkey err");console.log(err);});
-		}).catch(function(err){alert("Genauthkey err");console.log(err);});
 	}else{
 		alert("Invalid Username");
 	}
