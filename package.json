@@ -1,8 +1,8 @@
 {
   "name": "relichat",
-  "version": "0.0.1",
-  "description": "A possibly secure chat",
-  "main": "index.js",
+  "version": "0.0.2",
+  "description": "Chat software",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
