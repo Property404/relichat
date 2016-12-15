@@ -3,15 +3,17 @@
 
 <head>
 	<title>ReliChat</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link href="static//bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="static/css/main.css" rel="stylesheet" type="text/css">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 </head>
 
 <body>
 
+<!--<style>
+body {overflow-y: auto;}</style> -->
 	<!-- Column Layout -->
 	<div class="container-fluid">
 		<div class="row">
@@ -38,7 +40,32 @@
 				</ul>
 			</div>
 		</div>
+		<div class="row">
+			<form action="">
+			<div class="col-lg-9 col-md-9 text-right">
+				<input type="text" id="m" style="width:100%; height:55px;" class="form-control" placeholder="Message" autocomplete="off" />
+			</div>
+			<div class="col-lg-3 col-md-3 text-left">
+				<button style="width:50%"><span class="fa fa-paper-plane" style="font-size:38px; color:white;"></span></button>
+			</div>
+			</form>
+		</div>
 	</div>
+
+
+	<!-- Message Input Form 
+	<form action="">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-9 col-md-9 text-right">
+					<input type="text" id="m" style="width:100%; height:55px;" class="form-control" placeholder="Message" autocomplete="off" />
+				</div>
+				<div class="col-lg-3 col-md-3 text-left">
+					<button style="width:50%"><span class="fa fa-paper-plane" style="font-size:38px; color:white;"></span></button>
+				</div>
+			</div>
+		</div>
+	</form>-->
 
 	<!-- Startup Username Entry Modal -->
 	<div class="modal fade " id="enterUserModal" tabindex="-1" role="dialog" aria-labelledby="enterUserModal" aria-hidden="true">
@@ -59,21 +86,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Message Input Form -->
-	<form action="">
-		<div class="container ">
-			<div class="row">
-				<div class="col-lg-9 col-md-9 text-right">
-					<input type="text" id="m" style="width:100%; height:55px;" class="form-control" placeholder="Message" autocomplete="off" />
-				</div>
-				<div class="col-lg-3 col-md-3 text-left">
-					<button style="width:50%"><span class="fa fa-paper-plane" style="font-size:38px; color:white;"></span></button>
-				</div>
-			</div>
-		</div>
-	</form>
-
 	<script src="/static/js/socket.io.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
 	<script src="/static/js/common.js"></script>
