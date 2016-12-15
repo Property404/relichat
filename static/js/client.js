@@ -1,3 +1,4 @@
+
 /* Import commons */
 var common = new Common();
 // Initialize variables
@@ -85,15 +86,11 @@ function changeFocus(str) {
 document.getElementById("goButton").onclick = function() {
 	username = document.getElementById("username").value;
 	try{
-		alert("Wow");
 		common.validUserName(username, users);
-		alert("we");
 	}catch(err){
-		alert(err);
 	}
 	if (common.validUserName(username, users)) {
 		// Sign in
-		alert("yay");
 		socket.emit("signin", {
 			"username": username
 		});
