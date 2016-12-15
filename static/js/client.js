@@ -101,7 +101,6 @@ document.getElementById("goButton").onclick = function() {
 			console.log("Submited");
 			/* Get message*/
 			msg = $("#m").val();
-			console.log("'Bout to 'mit");
 
 			if (focus == "main") {
 				console.log("Emitting main message");
@@ -159,6 +158,7 @@ document.getElementById("goButton").onclick = function() {
 				privatechats[data.username]["new"] += 1;
 			}
 			updatePrivateChats();
+			document.getElementById("bottom").scrollIntoView();
 
 		});
 
